@@ -2,9 +2,11 @@ package ru.sejapoe.javapr.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 import ru.sejapoe.javapr.dto.SuccessResponse;
 import ru.sejapoe.javapr.dto.posts.CreatePostDto;
+import ru.sejapoe.javapr.dto.posts.FilterPostDto;
 import ru.sejapoe.javapr.dto.posts.PostDto;
 import ru.sejapoe.javapr.mapper.PostMapper;
 import ru.sejapoe.javapr.service.PostService;
@@ -38,5 +40,10 @@ public class PostController {
     public SuccessResponse delete(@PathVariable Long id) {
         postService.delete(id);
         return new SuccessResponse(true, "Post with ID [%d] has been deleted".formatted(id));
+    }
+
+    @GetMapping("/filter")
+    public List<PostDto> filter(@ParameterObject FilterPostDto filterPostDto) {
+        return postService.filter(filterPostDto.authorName(), filterPostDto.text()).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 }
