@@ -10,6 +10,7 @@ import ru.sejapoe.javapr.dto.posts.PostDto;
 public interface PostMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "author.id", source = "authorId")
     PostEntity toEntity(CreatePostDto postDto);
 
     PostDto toDto(PostEntity postEntity);

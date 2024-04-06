@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final UserService userService;
 
     @Transactional
     public PostEntity getById(Long id) {
@@ -28,6 +29,7 @@ public class PostService {
 
     @Transactional
     public PostEntity create(PostEntity postEntity) {
+        postEntity.setAuthor(userService.getById(postEntity.getAuthor().getId()));
         return postRepository.save(postEntity);
     }
 

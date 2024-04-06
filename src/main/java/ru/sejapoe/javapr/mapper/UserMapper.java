@@ -3,7 +3,6 @@ package ru.sejapoe.javapr.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
 import ru.sejapoe.javapr.domain.UserEntity;
 import ru.sejapoe.javapr.dto.users.CreateUserDto;
 import ru.sejapoe.javapr.dto.users.UserDto;
