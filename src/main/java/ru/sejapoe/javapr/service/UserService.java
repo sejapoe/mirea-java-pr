@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sejapoe.javapr.domain.UserEntity;
 import ru.sejapoe.javapr.exception.NotFoundException;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final EntityManager em;
@@ -25,6 +27,7 @@ public class UserService {
 
     @Transactional
     public UserEntity getById(Long id) {
+        log.info("Requested user[%d]".formatted(id));
         return userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("User with ID [%d] is not found".formatted(id))
         );
@@ -32,16 +35,20 @@ public class UserService {
 
     @Transactional
     public List<UserEntity> getAll() {
+        log.info("Requested all users");
         return userRepository.findAll();
     }
 
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-        return userRepository.save(userEntity);
+        UserEntity saved = userRepository.save(userEntity);
+        log.info("Saved user[%d]".formatted(saved.getId()));
+        return saved;
     }
 
     @Transactional
     public void delete(Long id) {
+        log.info("Deleted user[%d]".formatted(id));
         userRepository.delete(getById(id));
     }
 

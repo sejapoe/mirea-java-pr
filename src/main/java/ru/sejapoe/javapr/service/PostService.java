@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sejapoe.javapr.domain.PostEntity;
 import ru.sejapoe.javapr.exception.NotFoundException;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
     private final EntityManager em;
@@ -25,6 +27,7 @@ public class PostService {
 
     @Transactional
     public PostEntity getById(Long id) {
+        log.info("Requested post[%d]".formatted(id));
         return postRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Post with ID [%d] is not found".formatted(id))
         );
@@ -32,17 +35,21 @@ public class PostService {
 
     @Transactional
     public List<PostEntity> getAll() {
+        log.info("Requested all posts");
         return postRepository.findAll();
     }
 
     @Transactional
     public PostEntity create(PostEntity postEntity) {
         postEntity.setAuthor(userService.getById(postEntity.getAuthor().getId()));
-        return postRepository.save(postEntity);
+        PostEntity saved = postRepository.save(postEntity);
+        log.info("Created post[%d]".formatted(saved.getId()));
+        return saved;
     }
 
     @Transactional
     public void delete(Long id) {
+        log.info("Deleted post[%d]".formatted(id));
         postRepository.delete(getById(id));
     }
 
