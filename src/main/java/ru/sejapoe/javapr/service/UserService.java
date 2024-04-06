@@ -5,10 +5,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sejapoe.javapr.domain.UserEntity;
 import ru.sejapoe.javapr.exception.NotFoundException;
 import ru.sejapoe.javapr.repo.UserRepository;
@@ -24,8 +24,9 @@ import java.util.List;
 public class UserService {
     private final EntityManager em;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserEntity getById(Long id) {
         log.info("Requested user[%d]".formatted(id));
         return userRepository.findById(id).orElseThrow(() ->
@@ -33,7 +34,7 @@ public class UserService {
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserEntity> getAll() {
         log.info("Requested all users");
         return userRepository.findAll();
@@ -42,7 +43,9 @@ public class UserService {
     @Transactional
     public UserEntity create(UserEntity userEntity) {
         UserEntity saved = userRepository.save(userEntity);
-        log.info("Saved user[%d]".formatted(saved.getId()));
+        String logMsg = "Saved user[%d]".formatted(saved.getId());
+        log.info(logMsg);
+        emailService.sendAdmin("New User", logMsg);
         return saved;
     }
 
@@ -52,7 +55,7 @@ public class UserService {
         userRepository.delete(getById(id));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserEntity> filter(String name, LocalDate birthDateBefore, LocalDate birthDateAfter) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);

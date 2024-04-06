@@ -6,3 +6,6 @@ spring:
     hibernate:
       ddl-auto: validate
     database: postgresql
+
+email:
+  to: admin@admin.com

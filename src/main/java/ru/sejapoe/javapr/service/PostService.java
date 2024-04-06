@@ -5,10 +5,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sejapoe.javapr.domain.PostEntity;
 import ru.sejapoe.javapr.exception.NotFoundException;
 import ru.sejapoe.javapr.repo.PostRepository;
@@ -24,8 +24,9 @@ public class PostService {
     private final EntityManager em;
     private final PostRepository postRepository;
     private final UserService userService;
+    private final EmailService emailService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PostEntity getById(Long id) {
         log.info("Requested post[%d]".formatted(id));
         return postRepository.findById(id).orElseThrow(() ->
@@ -33,7 +34,7 @@ public class PostService {
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostEntity> getAll() {
         log.info("Requested all posts");
         return postRepository.findAll();
@@ -43,7 +44,9 @@ public class PostService {
     public PostEntity create(PostEntity postEntity) {
         postEntity.setAuthor(userService.getById(postEntity.getAuthor().getId()));
         PostEntity saved = postRepository.save(postEntity);
-        log.info("Created post[%d]".formatted(saved.getId()));
+        String logMsg = "Created post[%d]".formatted(saved.getId());
+        log.info(logMsg);
+        emailService.sendAdmin("New Post", logMsg);
         return saved;
     }
 
@@ -53,7 +56,7 @@ public class PostService {
         postRepository.delete(getById(id));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostEntity> filter(String authorName, String text) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<PostEntity> cq = cb.createQuery(PostEntity.class);
