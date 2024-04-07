@@ -2,6 +2,9 @@ spring:
   application:
     name: java-pr
 
+  jmx:
+    enabled: true
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -9,3 +12,6 @@ spring:
 
 email:
   to: admin@admin.com
+
+backup:
+  directory: /home/sejapoe/dev/java/java-pr/backup

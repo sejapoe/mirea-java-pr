@@ -24,6 +24,7 @@ repositories {
 dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     implementation("org.springframework.boot:spring-boot-starter-aop")
