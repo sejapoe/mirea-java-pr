@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.2.4"
     id("io.spring.dependency-management") version "1.1.4"
+    kotlin("jvm")
 }
 
 group = "ru.sejapoe"
@@ -47,6 +48,11 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    testImplementation("org.mockito:mockito-core:4.11.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("net.bytebuddy:byte-buddy:1.12.19")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.12.19")
 }
 
 tasks.withType<Test> {
